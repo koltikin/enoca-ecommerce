@@ -19,7 +19,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> getAllCustomer() {
-        var products = repository.getAllByIsDeleted(false);
+        var products = repository.getAllByIsDeletedOrderByProductNameAsc(false);
         return products.stream()
                 .map(product -> mapper.convert(product, new ProductDto()))
                 .toList();
@@ -46,6 +46,17 @@ public class ProductServiceImpl implements ProductService {
             productTobeUpdate.setId(id);
             Product savedProduct = repository.save(productTobeUpdate);
             return mapper.convert(savedProduct, new ProductDto());
+        }else throw new NoSuchElementException("No Product found with Id: " + id );
+    }
+
+    @Override
+    public ProductDto delete(Long id) {
+        var productTobeDelete = repository.findByIdAndIsDeleted(id,false);
+        if (productTobeDelete.isPresent()){
+            Product deletedProduct = repository.save(productTobeDelete.get());
+            deletedProduct.setIsDeleted(true);
+            repository.save(deletedProduct);
+            return mapper.convert(deletedProduct, new ProductDto());
         }else throw new NoSuchElementException("No Product found with Id: " + id );
     }
 }

@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    List<Product> getAllByIsDeleted(boolean isDeleted);
+    List<Product> getAllByIsDeletedOrderByProductNameAsc(boolean isDeleted);
 
     Optional<Product> findByIdAndIsDeleted(Long id, boolean isDeleted);
 }

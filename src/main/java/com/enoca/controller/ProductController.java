@@ -57,13 +57,28 @@ public class ProductController {
     public ResponseEntity<ResponseWrapper> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long id){
         var updatedProduct = productService.update(productDto,id);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(
                         ResponseWrapper.builder()
                                 .success(true)
-                                .code(HttpStatus.CREATED.value())
-                                .message("Product is successfully created")
+                                .code(HttpStatus.ACCEPTED.value())
+                                .message("Product is successfully updated")
                                 .data(updatedProduct)
+                                .build()
+                );
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ResponseWrapper> deleteProduct(@PathVariable Long id){
+        var deletedProduct = productService.delete(id);
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED)
+                .body(
+                        ResponseWrapper.builder()
+                                .success(true)
+                                .code(HttpStatus.ACCEPTED.value())
+                                .message("Product is successfully deleted")
+                                .data(deletedProduct)
                                 .build()
                 );
     }
