@@ -10,4 +10,6 @@ public interface ProductService {
     ProductDto getProductById(Long id);
 
     ProductDto create(ProductDto productDto);
+
+    ProductDto update(ProductDto productDto, Long id);
 }

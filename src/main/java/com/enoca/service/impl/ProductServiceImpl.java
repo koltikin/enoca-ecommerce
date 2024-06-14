@@ -37,4 +37,15 @@ public class ProductServiceImpl implements ProductService {
         Product createdProduct = repository.save(mapper.convert(productDto, new Product()));
         return mapper.convert(createdProduct, new ProductDto());
     }
+
+    @Override
+    public ProductDto update(ProductDto productDto, Long id) {
+        var foundProduct = repository.findByIdAndIsDeleted(id,false);
+        if (foundProduct.isPresent()){
+            Product productTobeUpdate = mapper.convert(productDto, new Product());
+            productTobeUpdate.setId(id);
+            Product savedProduct = repository.save(productTobeUpdate);
+            return mapper.convert(savedProduct, new ProductDto());
+        }else throw new NoSuchElementException("No Product found with Id: " + id );
+    }
 }
