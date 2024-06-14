@@ -1,9 +1,6 @@
 package com.enoca.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,6 +20,6 @@ public class Customer extends BaseEntity {
     @OneToOne
     private Cart cart;
 
-    @OneToMany(mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Order> orders;
 }

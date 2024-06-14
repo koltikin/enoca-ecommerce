@@ -1,6 +1,7 @@
 package com.enoca.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -18,9 +19,11 @@ public class OrderItem extends BaseEntity{
     private Product product;
 
     @ManyToOne
+    @JoinColumn(name = "cart-id")
     private Cart cart;
 
     @ManyToOne
+    @JoinColumn(name = "order-id")
     private Order order;
 
     private BigDecimal price;

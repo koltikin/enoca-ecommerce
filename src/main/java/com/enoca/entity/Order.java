@@ -13,12 +13,13 @@ import java.util.List;
 @Table(name = "orders")
 public class Order extends BaseEntity{
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     private List<OrderItem> items;
+
     private BigDecimal totalPrice;
 
     @Column(nullable = false, unique = true)
