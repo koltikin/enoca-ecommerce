@@ -15,10 +15,11 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<ResponseWrapper> getAllCustomer(){
         return ResponseEntity.ok(
                 ResponseWrapper.builder()
+                        .success(true)
                         .code(HttpStatus.OK.value())
                         .message("Customers are successfully retried")
                         .data(customerService.getAllCustomer())
@@ -26,12 +27,13 @@ public class CustomerController {
         );
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<ResponseWrapper> createCustomer(@RequestBody CustomerDto customer){
         CustomerDto savedCustomer = customerService.createCustomer(customer);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
                         ResponseWrapper.builder()
+                                .success(true)
                                 .code(HttpStatus.CREATED.value())
                                 .message("customer is successfully created")
                                 .data(savedCustomer)
