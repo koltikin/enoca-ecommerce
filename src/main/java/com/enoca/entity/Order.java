@@ -20,5 +20,7 @@ public class Order extends BaseEntity{
     @OneToMany
     private List<OrderItem> items;
     private BigDecimal totalPrice;
+
+    @Column(nullable = false, unique = true)
     private String orderCode;
 }
