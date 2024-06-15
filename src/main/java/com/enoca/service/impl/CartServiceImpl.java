@@ -8,6 +8,7 @@ import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
 import com.enoca.service.CartService;
+import com.enoca.service.CustomerService;
 import com.enoca.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,19 @@ public class CartServiceImpl implements CartService {
     private final CartRepository repository;
     private final MapperUtil mapper;
     private final ProductService productService;
+
+    @Override
+    public List<CartDto> findAllCarts() {
+        List<Cart> carts = repository.findAllByIsDeleted(false);
+        return carts.stream().map(cart -> mapper.convert(cart, new CartDto()))
+                .toList();
+    }
+
+    @Override
+    public CartDto createCart(CartDto cartDto) {
+        Cart savedCart = repository.save(mapper.convert(cartDto, new Cart()));
+        return mapper.convert(savedCart, new CartDto());
+    }
 
     @Override
     public CartDto getCart(long id) {

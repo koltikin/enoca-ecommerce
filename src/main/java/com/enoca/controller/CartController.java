@@ -14,6 +14,18 @@ import org.springframework.web.bind.annotation.*;
 public class CartController {
     private final CartService cartService;
 
+    @GetMapping("/list")
+    public ResponseEntity<ResponseWrapper> getAllCarts(){
+        return ResponseEntity.ok().body(
+                ResponseWrapper.builder()
+                        .success(true)
+                        .message("Carts are successfully retrieved")
+                        .code(HttpStatus.OK.value())
+                        .data(cartService.findAllCarts())
+                        .build()
+        );
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseWrapper> getCart(@PathVariable long id){
         CartDto cart = cartService.getCart(id);
@@ -47,7 +59,7 @@ public class CartController {
                 ResponseWrapper.builder()
                         .success(true)
                         .code(HttpStatus.ACCEPTED.value())
-                        .message("cart is successfully updated")
+                        .message("cart is successfully cleared")
                         .data(updatedCart)
                         .build()
         );
