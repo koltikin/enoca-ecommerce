@@ -8,4 +8,8 @@ public interface CartService {
     CartDto updateCart(CartDto cartDto, long id);
 
     CartDto emptyCart(long customerId);
+
+    CartDto findByCustomerId(Long customerId);
+
+    void save(CartDto cart);
 }

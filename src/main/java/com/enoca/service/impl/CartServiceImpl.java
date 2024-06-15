@@ -45,4 +45,15 @@ public class CartServiceImpl implements CartService {
             return mapper.convert(repository.save(cartToBeEmpty), new CartDto());
         } else throw new NoSuchElementException("there is No cart with id: " + id);
     }
+
+    @Override
+    public CartDto findByCustomerId(Long customerId) {
+        Cart cart = repository.findByCustomerIdAndIsDeleted(customerId,false);
+        return mapper.convert(cart, new CartDto());
+    }
+
+    @Override
+    public void save(CartDto cartDto) {
+        repository.save(mapper.convert(cartDto, new Cart()));
+    }
 }

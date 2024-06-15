@@ -27,7 +27,7 @@ public class CartController {
         );
     }
 
-    @GetMapping("/update/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<ResponseWrapper> updateCart(@RequestBody CartDto cartDto, @PathVariable long id){
         CartDto updatedCart = cartService.updateCart(cartDto, id);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(

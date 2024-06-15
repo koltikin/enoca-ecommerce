@@ -59,4 +59,9 @@ public class ProductServiceImpl implements ProductService {
             return mapper.convert(deletedProduct, new ProductDto());
         }else throw new NoSuchElementException("No Product found with Id: " + id );
     }
+
+    @Override
+    public void save(ProductDto product) {
+        repository.save(mapper.convert(product,new Product()));
+    }
 }
