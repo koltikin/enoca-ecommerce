@@ -12,13 +12,11 @@ import com.enoca.service.OrderCodeService;
 import com.enoca.service.OrderService;
 import com.enoca.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +24,6 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
     private final ProductService productService;
-    private final OrderService orderService;
     private final OrderRepository repository;
     private final OrderCodeService orderCodeService;
     private final MapperUtil mapper;
@@ -66,7 +63,9 @@ public class OrderServiceImpl implements OrderService {
         cart.setTotalPrice(BigDecimal.ZERO);
         cartService.save(cart);
 
-        return orderService.save(order);
+        Order savedOrder = repository.save(mapper.convert(order,new Order()));
+
+        return mapper.convert(savedOrder, new OrderDto());
     }
 
     @Override
@@ -76,8 +75,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDto getOrderForCode(Long orderCode) {
-        Order order = repository.findOrderByOrderCodeAndIsDeleted(false)
+    public OrderDto getOrderForCode(String orderCode) {
+        Order order = repository.findOrderByOrderCodeAndIsDeleted(orderCode,false)
                 .orElseThrow(()->new NoSuchElementException("No order found with code: " + orderCode));
         return mapper.convert(order, new OrderDto());
     }

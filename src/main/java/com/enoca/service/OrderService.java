@@ -10,7 +10,7 @@ public interface OrderService {
 
     OrderDto save(OrderDto order);
 
-    OrderDto getOrderForCode(Long orderCode);
+    OrderDto getOrderForCode(String orderCode);
 
     List<OrderDto> getAllOrdersForCustomer(Long customerId);
 }

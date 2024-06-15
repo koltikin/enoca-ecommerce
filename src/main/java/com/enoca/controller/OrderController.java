@@ -30,7 +30,7 @@ public class OrderController {
     }
 
     @GetMapping("/order/{orderCode}")
-    public ResponseEntity<ResponseWrapper> getOrderForCode(@PathVariable Long orderCode) {
+    public ResponseEntity<ResponseWrapper> getOrderForCode(@PathVariable String orderCode) {
         OrderDto order =  oderService.getOrderForCode(orderCode);
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseWrapper.builder()
