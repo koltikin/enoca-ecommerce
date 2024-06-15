@@ -12,4 +12,8 @@ public interface CartService {
     CartDto findByCustomerId(Long customerId);
 
     void save(CartDto cart);
+
+    CartDto addProductToCart(Long customerId, Long productId, int quantity);
+
+    CartDto removeProductFromCart(Long customerId, Long productId, int quantity);
 }

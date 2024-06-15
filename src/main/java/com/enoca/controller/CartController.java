@@ -52,4 +52,14 @@ public class CartController {
                         .build()
         );
     }
+
+    @PutMapping("/addProduct/{customerId}")
+    public CartDto addProductToCart(@PathVariable Long customerId, @RequestParam Long productId, @RequestParam int quantity) {
+        return cartService.addProductToCart(customerId, productId, quantity);
+    }
+
+    @PutMapping("/removeProduct/{customerId}")
+    public CartDto removeProductFromCart(@PathVariable Long customerId, @RequestParam Long productId, @RequestParam int quantity) {
+        return cartService.removeProductFromCart(customerId, productId, quantity);
+    }
 }

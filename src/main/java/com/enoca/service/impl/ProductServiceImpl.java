@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductById(Long id) {
         Product product = repository.findByIdAndIsDeleted(id,false)
-                .orElseThrow(()->new NoSuchElementException("No such product found"));
+                .orElseThrow(()->new RuntimeException("Product not found with id: " + id));
         return mapper.convert(product, new ProductDto());
     }
 
