@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -17,11 +18,14 @@ public class Order extends BaseEntity{
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderItem> items;
-
     private BigDecimal totalPrice;
+
+    @OneToMany
+    private List<OrderItem> orderItems;
 
     @Column(nullable = false, unique = true)
     private String orderCode;
+
+    @Column(columnDefinition = "DATETIME")
+    private LocalDateTime orderDateTime;
 }

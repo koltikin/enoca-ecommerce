@@ -16,4 +16,5 @@ public class Product extends BaseEntity{
     private String productName;
     private BigDecimal price;
     private Integer inStockQuantity;
+
 }

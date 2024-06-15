@@ -4,11 +4,11 @@ import com.enoca.dto.CartDto;
 import com.enoca.dto.OrderItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
+import com.enoca.entity.OrderItem;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
 import com.enoca.service.CartService;
-import com.enoca.service.CustomerService;
 import com.enoca.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +60,7 @@ public class CartServiceImpl implements CartService {
         var cart = repository.findByIdAndIsDeleted(id, false);
         if (cart.isPresent()) {
             Cart cartToBeEmpty = cart.get();
-            cartToBeEmpty.setOrderItems(List.of());
+            cartToBeEmpty.setCartItems(List.of());
             cartToBeEmpty.setTotalPrice(BigDecimal.ZERO);
             return mapper.convert(repository.save(cartToBeEmpty), new CartDto());
         } else throw new EnocaEcommerceProjectException("there is No cart with id: " + id);
@@ -95,15 +95,15 @@ public class CartServiceImpl implements CartService {
             throw new EnocaEcommerceProjectException("Not enough stock for product: " + productDto.getProductName());
         }
 
-        OrderItemDto orderItem = cartDto.getOrderItems().stream()
+        OrderItemDto orderItem = cartDto.getCartItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
                 .orElseGet(() -> {
                     OrderItemDto newItem = new OrderItemDto();
                     newItem.setProduct(productDto);
                     newItem.setCart(cartDto);
-                    cartDto.getOrderItems().add(newItem);
-                    return newItem;
+//                    cartDto.getCartItems().add(newItem);
+                    return new OrderItem();
                 });
 
         orderItem.setQuantity(orderItem.getQuantity() + quantity);
@@ -115,9 +115,10 @@ public class CartServiceImpl implements CartService {
     }
 
     private BigDecimal calculateCartTotalPrice(CartDto cartDto) {
-        return cartDto.getOrderItems().stream()
-                .map(OrderItemDto::getPrice)
-                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+        return null;
+//        return cartDto.getCartItems().stream()
+//                .map(OrderItemDto::getPrice)
+//                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
     }
 
 

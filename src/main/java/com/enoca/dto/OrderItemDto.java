@@ -1,6 +1,10 @@
 package com.enoca.dto;
 
+import com.enoca.entity.Order;
+import com.enoca.entity.Product;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,17 +20,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItemDto {
+
     private Long id;
-    private ProductDto product;
+    private Product product;
 
-    @NotNull
-    private CartDto cart;
+    @JoinColumn(name = "order-id")
+    private Order order;
 
-    private OrderDto order;
-
-    @Min(0)
     private BigDecimal price;
-    @Min(1)
     private int quantity;
 
 }

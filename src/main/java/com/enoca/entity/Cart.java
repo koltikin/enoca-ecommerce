@@ -13,10 +13,11 @@ import java.util.List;
 @Table(name = "carts")
 public class Cart extends BaseEntity{
 
-    @OneToOne(mappedBy = "cart")
+    @OneToOne
     private Customer customer;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderItem> orderItems;
+    private List<Product> products;
+
     private BigDecimal totalPrice;
 }

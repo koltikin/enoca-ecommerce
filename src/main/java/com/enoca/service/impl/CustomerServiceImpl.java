@@ -30,7 +30,6 @@ public class CustomerServiceImpl implements CustomerService {
         CartDto cartDto = new CartDto();
         var savedCard = cartService.createCart(cartDto);
 
-        customerDto.setCart(savedCard);
 
         Customer customer = mapper.convert(customerDto, new Customer());
         Customer savedCustomer = repository.save(customer);
