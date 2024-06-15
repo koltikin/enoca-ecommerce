@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,11 +24,12 @@ public class CustomerDto {
     private String firstName;
     private String lastName;
 
-    @Email
+    @Email(message = "Email should be valid")
     private String email;
 
-    @NotBlank
-    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{6,}$") // Minimum 6 character at least one digit and one uppercase latter
+    @NotBlank(message = "Password should not be blank")
+    @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{6,}$"
+    ,message = "Password must be at least 6 characters long and contain at least one digit and one uppercase letter")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passWord;
 

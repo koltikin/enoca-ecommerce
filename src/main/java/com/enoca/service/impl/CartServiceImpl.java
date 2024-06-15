@@ -4,6 +4,7 @@ import com.enoca.dto.CartDto;
 import com.enoca.dto.OrderItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
+import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
 import com.enoca.service.CartService;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @Service
@@ -27,7 +27,7 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartDto getCart(long id) {
         Cart cart = repository.findByIdAndIsDeleted(id, false)
-                .orElseThrow(() -> new NoSuchElementException("No cart found with id: " + id));
+                .orElseThrow(() -> new EnocaEcommerceProjectException("No cart found with id: " + id));
         return mapper.convert(cart, new CartDto());
     }
 
@@ -38,7 +38,7 @@ public class CartServiceImpl implements CartService {
             Cart cartToBeUpdate = mapper.convert(cartDto, new Cart());
             cartToBeUpdate.setId(id);
             return mapper.convert(repository.save(cartToBeUpdate), new CartDto());
-        } else throw new NoSuchElementException("there is No cart with id: " + id);
+        } else throw new EnocaEcommerceProjectException("there is No cart with id: " + id);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class CartServiceImpl implements CartService {
             cartToBeEmpty.setOrderItems(List.of());
             cartToBeEmpty.setTotalPrice(BigDecimal.ZERO);
             return mapper.convert(repository.save(cartToBeEmpty), new CartDto());
-        } else throw new NoSuchElementException("there is No cart with id: " + id);
+        } else throw new EnocaEcommerceProjectException("there is No cart with id: " + id);
     }
 
     @Override
@@ -72,13 +72,13 @@ public class CartServiceImpl implements CartService {
         CartDto cartDto = mapper.convert(cart, new CartDto());
 
         if (cartDto == null) {
-            throw new RuntimeException("Cart not found for customer id: " + customerId);
+            throw new EnocaEcommerceProjectException("Cart not found for customer id: " + customerId);
         }
 
         ProductDto productDto = productService.getProductById(productId);
 
         if (productDto.getInStockQuantity() < quantity) {
-            throw new RuntimeException("Not enough stock for product: " + productDto.getProductName());
+            throw new EnocaEcommerceProjectException("Not enough stock for product: " + productDto.getProductName());
         }
 
         OrderItemDto orderItem = cartDto.getOrderItems().stream()
@@ -117,10 +117,10 @@ public class CartServiceImpl implements CartService {
         OrderItemDto cartItem = cartDto.getOrderItems().stream()
                 .filter(item -> item.getProduct().getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Product not found in cart for product id: " + productId));
+                .orElseThrow(() -> new EnocaEcommerceProjectException("Product not found in cart for product id: " + productId));
 
         if (cartItem.getQuantity() < quantity) {
-            throw new RuntimeException("Cannot remove more items than are in the cart for product id: " + productId);
+            throw new EnocaEcommerceProjectException("Cannot remove more items than are in the cart for product id: " + productId);
         }
 
         cartItem.setQuantity(cartItem.getQuantity() - quantity);

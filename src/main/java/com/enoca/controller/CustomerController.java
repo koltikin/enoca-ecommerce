@@ -3,6 +3,7 @@ package com.enoca.controller;
 import com.enoca.dto.CustomerDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.CustomerService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ public class CustomerController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseWrapper> createCustomer(@RequestBody CustomerDto customer){
+    public ResponseEntity<ResponseWrapper> createCustomer(@Valid @RequestBody CustomerDto customer){
         CustomerDto savedCustomer = customerService.createCustomer(customer);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(
