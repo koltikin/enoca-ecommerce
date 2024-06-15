@@ -2,6 +2,7 @@ package com.enoca.service.impl;
 
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Product;
+import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.ProductRepository;
 import com.enoca.service.ProductService;
@@ -9,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getProductById(Long id) {
         Product product = repository.findByIdAndIsDeleted(id,false)
-                .orElseThrow(()->new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(()->new EnocaEcommerceProjectException("Product not found with id: " + id));
         return mapper.convert(product, new ProductDto());
     }
 
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
             productTobeUpdate.setId(id);
             Product savedProduct = repository.save(productTobeUpdate);
             return mapper.convert(savedProduct, new ProductDto());
-        }else throw new NoSuchElementException("No Product found with Id: " + id );
+        }else throw new EnocaEcommerceProjectException("No Product found with Id: " + id );
     }
 
     @Override
@@ -57,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
             deletedProduct.setIsDeleted(true);
             repository.save(deletedProduct);
             return mapper.convert(deletedProduct, new ProductDto());
-        }else throw new NoSuchElementException("No Product found with Id: " + id );
+        }else throw new EnocaEcommerceProjectException("No Product found with Id: " + id );
     }
 
     @Override

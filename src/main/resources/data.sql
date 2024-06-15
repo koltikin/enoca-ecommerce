@@ -1,8 +1,8 @@
-INSERT INTO customers (created_date_time, last_update_date_time, is_deleted, first_name, last_name, email)
+INSERT INTO customers (created_date_time, last_update_date_time, is_deleted, first_name, last_name, email,pass_word)
 VALUES
-    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'John', 'Doe', 'john.doe@example.com'),
-    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Jane', 'Smith', 'jane.smith@example.com'),
-    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Michael', 'Johnson', 'michael.johnson@example.com');
+    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'John', 'Doe', 'john.doe@example.com','Abc123'),
+    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Jane', 'Smith', 'jane.smith@example.com','Abc123'),
+    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Michael', 'Johnson', 'michael.johnson@example.com','Abc123');
 
 
 INSERT INTO products (created_date_time, last_update_date_time, is_deleted, product_name, price, in_stock_quantity)

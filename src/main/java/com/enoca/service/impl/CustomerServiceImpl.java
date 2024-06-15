@@ -25,7 +25,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerDto> getAllCustomer() {
-        List<Customer> customers = repository.getAllByIsDeleted(false);
+        List<Customer> customers = repository.getAllByIsDeletedOrderByFirstNameAsc(false);
         return customers.stream()
                 .map(customer -> mapper.convert(customer, new CustomerDto()))
                 .toList();

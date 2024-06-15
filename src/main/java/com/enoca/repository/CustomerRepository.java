@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
-    List<Customer> getAllByIsDeleted(boolean isDeleted);
+    List<Customer> getAllByIsDeletedOrderByFirstNameAsc(boolean isDeleted);
 }

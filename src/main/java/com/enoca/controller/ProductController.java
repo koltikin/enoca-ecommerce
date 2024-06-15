@@ -3,6 +3,7 @@ package com.enoca.controller;
 import com.enoca.dto.ProductDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class ProductController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<ResponseWrapper> createProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<ResponseWrapper> createProduct(@Valid @RequestBody ProductDto productDto){
         var createdProduct = productService.create(productDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -54,7 +55,7 @@ public class ProductController {
     }
 
     @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseWrapper> updateProduct(@RequestBody ProductDto productDto, @PathVariable Long id){
+    public ResponseEntity<ResponseWrapper> updateProduct(@Valid @RequestBody ProductDto productDto, @PathVariable Long id){
         var updatedProduct = productService.update(productDto,id);
 
         return ResponseEntity.status(HttpStatus.ACCEPTED)
