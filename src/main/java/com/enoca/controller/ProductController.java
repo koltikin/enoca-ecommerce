@@ -20,7 +20,7 @@ public class ProductController {
                 ResponseWrapper.builder()
                         .success(true)
                         .code(HttpStatus.OK.value())
-                        .message("Products are successfully retried")
+                        .message("Products are successfully retrieved")
                         .data(productService.getAllCustomer())
                         .build()
         );
@@ -32,7 +32,7 @@ public class ProductController {
                 ResponseWrapper.builder()
                         .success(true)
                         .code(HttpStatus.OK.value())
-                        .message("Product is successfully retried")
+                        .message("Product is successfully retrieved")
                         .data(productService.getProductById(id))
                         .build()
         );

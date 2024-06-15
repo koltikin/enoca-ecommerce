@@ -17,6 +17,6 @@ public class Cart extends BaseEntity{
     private Customer customer;
 
     @OneToMany(fetch = FetchType.LAZY)
-    private List<OrderItem> items;
+    private List<OrderItem> orderItems;
     private BigDecimal totalPrice;
 }

@@ -1,6 +1,5 @@
 package com.enoca.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +17,6 @@ import java.util.List;
 public class CartDto {
     private Long id;
     private CustomerDto customer;
-    private List<OrderItemDto> items;
+    private List<OrderItemDto> orderItems;
     private BigDecimal totalPrice;
 }

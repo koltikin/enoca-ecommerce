@@ -21,7 +21,7 @@ public class CustomerController {
                 ResponseWrapper.builder()
                         .success(true)
                         .code(HttpStatus.OK.value())
-                        .message("Customers are successfully retried")
+                        .message("Customers are successfully retrieved")
                         .data(customerService.getAllCustomer())
                         .build()
         );
