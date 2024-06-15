@@ -1,6 +1,7 @@
 package com.enoca.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartDto {
     private Long id;
+    @NotNull
     private CustomerDto customer;
     private List<OrderItemDto> orderItems;
     private BigDecimal totalPrice;

@@ -1,6 +1,8 @@
 package com.enoca.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +18,15 @@ import java.math.BigDecimal;
 public class OrderItemDto {
     private Long id;
     private ProductDto product;
+
+    @NotNull
     private CartDto cart;
+
     private OrderDto order;
+
+    @Min(0)
     private BigDecimal price;
+    @Min(1)
     private int quantity;
 
 }
