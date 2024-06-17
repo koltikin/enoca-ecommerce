@@ -13,7 +13,7 @@ import java.util.List;
 @Table(name = "carts")
 public class Cart extends BaseEntity{
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private Customer customer;
 
     @OneToMany(fetch = FetchType.LAZY)

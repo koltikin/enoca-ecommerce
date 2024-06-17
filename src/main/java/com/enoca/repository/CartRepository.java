@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart, Long> {
     Optional<Cart> findByIdAndIsDeleted(long id, boolean isDeleted);
 
-    Cart findByCustomerIdAndIsDeleted(Long customerId, boolean isDeleted);
+    Optional<Cart> findByCustomerIdAndIsDeleted(Long customerId, boolean isDeleted);
 
     List<Cart> findAllByIsDeleted(boolean isDeleted);
 }

@@ -3,7 +3,6 @@ package com.enoca.controller;
 import com.enoca.dto.CartDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.CartService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +39,18 @@ public class CartController {
         );
     }
 
+    @PostMapping("/addproduct/{customerId}")
+    public ResponseEntity<ResponseWrapper> addProductToCart(@PathVariable long customerId,
+                                                            @RequestParam long productId){
+        CartDto cart = cartService.addProductToCart(customerId, productId);
+        return ResponseEntity.ok(ResponseWrapper.builder()
+                        .success(true)
+                        .code(HttpStatus.OK.value())
+                        .message("product successfully added to cart")
+                        .data(cart)
+                .build());
+    }
+
     @PutMapping("/update/{cartId}")
     public ResponseEntity<ResponseWrapper> updateCart(@PathVariable long cartId,
                                                       @RequestParam long productId, @RequestParam int quantity){
@@ -65,11 +76,6 @@ public class CartController {
                         .data(updatedCart)
                         .build()
         );
-    }
-
-    @PutMapping("/addProduct/{customerId}")
-    public CartDto addProductToCart(@PathVariable Long customerId, @RequestParam Long productId, @RequestParam int quantity) {
-        return cartService.addProductToCart(customerId, productId, quantity);
     }
 
     @PutMapping("/removeProduct/{customerId}")

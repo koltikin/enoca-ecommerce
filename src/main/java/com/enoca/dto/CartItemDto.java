@@ -1,7 +1,5 @@
 package com.enoca.dto;
 
-import com.enoca.entity.Cart;
-import com.enoca.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CartItemDto {
+    private Long id;
 
-    private Product product;
-    private Cart cart;
+    private ProductDto product;
+//    private CartDto cart;
 
     private int quantity;
 }

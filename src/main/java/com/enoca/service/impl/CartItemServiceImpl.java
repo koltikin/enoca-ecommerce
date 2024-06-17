@@ -17,4 +17,10 @@ public class CartItemServiceImpl implements CartItemService {
     public void save(CartItemDto cartItemDto) {
         repository.save(mapper.convert(cartItemDto, new CartItem()));
     }
+
+    @Override
+    public CartItemDto saveCartItem(CartItemDto cartItem) {
+        CartItem savedCartItem = repository.save(mapper.convert(cartItem, new CartItem()));
+        return mapper.convert(savedCartItem, new CartItemDto());
+    }
 }

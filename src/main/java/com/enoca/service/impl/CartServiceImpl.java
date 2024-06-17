@@ -4,14 +4,17 @@ import com.enoca.dto.CartDto;
 import com.enoca.dto.CartItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
+import com.enoca.entity.CartItem;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
 import com.enoca.service.CartItemService;
 import com.enoca.service.CartService;
+import com.enoca.service.CustomerService;
 import com.enoca.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -48,6 +51,26 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
+    public CartDto addProductToCart (long customerId, long productId){
+        CartDto cart = findByCustomerId(customerId);
+        ProductDto product = productService.getProductById(productId);
+        // create new cartItem with product
+        CartItemDto cartItem = new CartItemDto();
+        cartItem.setProduct(product);
+        cartItem.setQuantity(1);
+        // save new card item
+        CartItemDto savedCardItem = cartItemService.saveCartItem(cartItem);
+        // add cart item to cart
+        cart.getCartItems().add(savedCardItem);
+
+        // increase cart Total price
+        cart.setTotalPrice(cart.getTotalPrice().add(product.getPrice()));
+
+        return saveCart(cart);
+    }
+
+    @Override
     public CartDto updateCart(long cartId, long productId, int quantity) {
         CartDto cartDto = getCart(cartId);
         ProductDto productDto = productService.getProductById(productId);
@@ -60,8 +83,14 @@ public class CartServiceImpl implements CartService {
                 filter(cartItem -> cartItem.getProduct().getId() == productId)
                 .findFirst();
         if (foundCartItem.isPresent()){
-            foundCartItem.get().setQuantity(quantity);
-            cartItemService.save(foundCartItem.get());
+            CartItemDto cartItem = foundCartItem.get();
+
+            // calculate the cart total price and save
+            calculateCartTotalPriceAndSave(cartDto, cartItem,quantity);
+
+            //set new quantity and save
+            cartItem.setQuantity(quantity);
+            cartItemService.save(cartItem);
         }else {
             throw new EnocaEcommerceProjectException("the Cart doesn't have the product");
         }
@@ -76,28 +105,24 @@ public class CartServiceImpl implements CartService {
 
     @Override
     public CartDto findByCustomerId(Long customerId) {
-        Cart cart = repository.findByCustomerIdAndIsDeleted(customerId,false);
+        Cart cart = repository.findByCustomerIdAndIsDeleted(customerId,false)
+                .orElseThrow(()->new EnocaEcommerceProjectException("No specific cart found"));
         return mapper.convert(cart, new CartDto());
     }
 
     @Override
-    public void save(CartDto cartDto) {
-        repository.save(mapper.convert(cartDto, new Cart()));
+    public CartDto saveCart(CartDto cartDto) {
+        Cart savedCart = repository.save(mapper.convert(cartDto, new Cart()));
+        return mapper.convert(savedCart, new CartDto());
     }
 
-
-    @Override
-    @Transactional
-    public CartDto addProductToCart (Long customerId, Long productId,int quantity){
-
-        return null;
-    }
-
-    private BigDecimal calculateCartTotalPrice(CartDto cartDto) {
-        return null;
-//        return cartDto.getCartItems().stream()
-//                .map(OrderItemDto::getPrice)
-//                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    private void calculateCartTotalPriceAndSave(CartDto cartDto, CartItemDto cartItem, int quantity) {
+        int addedQuantity = quantity - cartItem.getQuantity();
+        BigDecimal productPrice = cartItem.getProduct().getPrice();
+        BigDecimal oldTotalPrice = cartDto.getTotalPrice();
+        BigDecimal newTotalPrice = oldTotalPrice.add(productPrice.multiply(BigDecimal.valueOf(addedQuantity)));
+        cartDto.setTotalPrice(newTotalPrice);
+        saveCart(cartDto);
     }
 
 

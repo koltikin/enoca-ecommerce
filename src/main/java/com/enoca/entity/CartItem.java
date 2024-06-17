@@ -7,7 +7,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 
 @Getter
 @Setter
@@ -16,9 +15,5 @@ public class CartItem extends BaseEntity{
 
     @ManyToOne
     private Product product;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", nullable = false)
-    private Cart cart;
     private int quantity;
 }
