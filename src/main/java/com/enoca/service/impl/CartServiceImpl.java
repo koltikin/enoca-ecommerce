@@ -72,6 +72,7 @@ public class CartServiceImpl implements CartService {
             // create new cartItem with product
             CartItemDto cartItem = new CartItemDto();
             cartItem.setProduct(product);
+            cartItem.setIsDeleted(false);
             cartItem.setQuantity(1);
             // save new card item
             CartItemDto savedCardItem = cartItemService.saveCartItem(cartItem);
@@ -86,19 +87,25 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto updateCart(long cartId, long productId, int quantity) {
-        CartDto cartDto = getCart(cartId);
+    public CartDto updateCart(long customerId, long productId, int quantity) {
+        CartDto cartDto = findByCustomerId(customerId);
         ProductDto productDto = productService.getProductById(productId);
         // check if quantity grater then inStockQuantity
-        if (quantity>productDto.getInStockQuantity()){
-            throw new EnocaEcommerceProjectException("product quantity couldn't be grater then inStock quantity");
+        if (quantity>productDto.getInStockQuantity() || quantity<0){
+            throw new EnocaEcommerceProjectException("product quantity couldn't be grater then inStock quantity " +
+                    "or less then 0");
         }
+
         // change the product quantity in cart
         Optional<CartItemDto> foundCartItem = cartDto.getCartItems().stream().
                 filter(cartItem -> cartItem.getProduct().getId() == productId)
                 .findFirst();
         if (foundCartItem.isPresent()){
             CartItemDto cartItem = foundCartItem.get();
+            if (quantity == 0){
+                cartItem.setIsDeleted(true);
+                cartDto.getCartItems().remove(cartItem);
+            }
 
             // calculate the cart total price and save
             calculateCartTotalPriceAndSave(cartDto, cartItem,quantity);
@@ -109,7 +116,7 @@ public class CartServiceImpl implements CartService {
         }else {
             throw new EnocaEcommerceProjectException("the Cart doesn't have the product");
         }
-        return getCart(cartId);
+        return findByCustomerId(customerId);
     }
 
 
