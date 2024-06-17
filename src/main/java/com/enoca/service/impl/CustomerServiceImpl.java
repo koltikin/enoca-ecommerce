@@ -11,6 +11,7 @@ import com.enoca.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -24,15 +25,20 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDto createCustomer(CustomerDto customerDto) {
         //check customer exist or not
         boolean isCustomerExist = repository.existsByEmailAndIsDeleted(customerDto.getEmail(),false);
-        if(isCustomerExist) throw  new EnocaEcommerceProjectException("Customer already exist with Email: " + customerDto.getEmail())
-                ;
-        // initialize with cart
-        CartDto cartDto = new CartDto();
-        var savedCard = cartService.createCart(cartDto);
+        if(isCustomerExist) throw  new EnocaEcommerceProjectException("Customer already exist with Email: " + customerDto.getEmail());
 
-
+        // save new customer
         Customer customer = mapper.convert(customerDto, new Customer());
         Customer savedCustomer = repository.save(customer);
+
+        // create new cart for new customer
+        CartDto cartDto = new CartDto();
+
+        // initialize cart with total price and new customer than save it
+        cartDto.setTotalPrice(BigDecimal.ZERO);
+        cartDto.setCustomer(mapper.convert(savedCustomer, new CustomerDto()));
+        cartService.createCart(cartDto);
+
         return mapper.convert(savedCustomer, new CustomerDto());
     }
 

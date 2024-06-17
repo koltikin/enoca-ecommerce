@@ -1,8 +1,6 @@
 package com.enoca.service.impl;
 
-import com.enoca.dto.CartDto;
 import com.enoca.dto.OrderDto;
-import com.enoca.dto.OrderItemDto;
 import com.enoca.entity.Order;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.OrderRepository;
@@ -13,10 +11,8 @@ import com.enoca.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,42 +25,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto placeOrder(Long customerId) {
-        CartDto cart = cartService.findByCustomerId(customerId);
-        if (cart == null || cart.getCartItems().isEmpty()) {
-            throw new RuntimeException("Cart is empty");
-        }
-
-        OrderDto order = new OrderDto();
-        order.setCustomer(cart.getCustomer());
-        order.setCartItems(cart.getCartItems().stream().map(cartItem -> {
-            OrderItemDto orderItem = new OrderItemDto();
-            orderItem.setOrder(order);
-//            orderItem.setProduct(cartItem.getProduct());
-            orderItem.setQuantity(cartItem.getQuantity());
-            orderItem.setPrice(cartItem.getPrice());
-            return orderItem;
-        }).collect(Collectors.toList()));
-        order.setTotalPrice(cart.getTotalPrice());
-
-        // update the stock
-//        for (OrderItemDto cartItem : cart.getCartItems()) {
-//            ProductDto product = cartItem.getProduct();
-//            product.setInStockQuantity(product.getInStockQuantity() - cartItem.getQuantity());
-//            productService.save(product);
-//        }
-
-        // Generate a unique orderCode
-        String orderCode = orderCodeService.generateOrderCode();
-        order.setOrderCode(orderCode);
-
-        // clear the cart
-        cart.getCartItems().clear();
-        cart.setTotalPrice(BigDecimal.ZERO);
-        cartService.save(cart);
-
-        Order savedOrder = repository.save(mapper.convert(order,new Order()));
-
-        return mapper.convert(savedOrder, new OrderDto());
+       return  null;
     }
 
     @Override

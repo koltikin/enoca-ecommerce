@@ -3,6 +3,7 @@ package com.enoca.controller;
 import com.enoca.dto.CartDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.CartService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,9 +40,10 @@ public class CartController {
         );
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<ResponseWrapper> updateCart(@RequestBody CartDto cartDto, @PathVariable long id){
-        CartDto updatedCart = cartService.updateCart(cartDto, id);
+    @PutMapping("/update/{cartId}")
+    public ResponseEntity<ResponseWrapper> updateCart(@PathVariable long cartId,
+                                                      @RequestParam long productId, @RequestParam int quantity){
+        CartDto updatedCart = cartService.updateCart(cartId, productId,quantity);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 ResponseWrapper.builder()
                         .success(true)

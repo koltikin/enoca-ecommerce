@@ -1,13 +1,13 @@
 package com.enoca.service.impl;
 
 import com.enoca.dto.CartDto;
-import com.enoca.dto.OrderItemDto;
+import com.enoca.dto.CartItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
-import com.enoca.entity.OrderItem;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
+import com.enoca.service.CartItemService;
 import com.enoca.service.CartService;
 import com.enoca.service.ProductService;
 import jakarta.transaction.Transactional;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -24,6 +25,7 @@ public class CartServiceImpl implements CartService {
     private final CartRepository repository;
     private final MapperUtil mapper;
     private final ProductService productService;
+    private final CartItemService cartItemService;
 
     @Override
     public List<CartDto> findAllCarts() {
@@ -46,24 +48,30 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto updateCart(CartDto cartDto, long id) {
-        var cart = repository.findByIdAndIsDeleted(id, false);
-        if (cart.isPresent()) {
-            Cart cartToBeUpdate = mapper.convert(cartDto, new Cart());
-            cartToBeUpdate.setId(id);
-            return mapper.convert(repository.save(cartToBeUpdate), new CartDto());
-        } else throw new EnocaEcommerceProjectException("there is No cart with id: " + id);
+    public CartDto updateCart(long cartId, long productId, int quantity) {
+        CartDto cartDto = getCart(cartId);
+        ProductDto productDto = productService.getProductById(productId);
+        // check if quantity grater then inStockQuantity
+        if (quantity>productDto.getInStockQuantity()){
+            throw new EnocaEcommerceProjectException("product quantity couldn't be grater then inStock quantity");
+        }
+        // change the product quantity in cart
+        Optional<CartItemDto> foundCartItem = cartDto.getCartItems().stream().
+                filter(cartItem -> cartItem.getProduct().getId() == productId)
+                .findFirst();
+        if (foundCartItem.isPresent()){
+            foundCartItem.get().setQuantity(quantity);
+            cartItemService.save(foundCartItem.get());
+        }else {
+            throw new EnocaEcommerceProjectException("the Cart doesn't have the product");
+        }
+        return getCart(cartId);
     }
+
 
     @Override
     public CartDto emptyCart(long id) {
-        var cart = repository.findByIdAndIsDeleted(id, false);
-        if (cart.isPresent()) {
-            Cart cartToBeEmpty = cart.get();
-            cartToBeEmpty.setCartItems(List.of());
-            cartToBeEmpty.setTotalPrice(BigDecimal.ZERO);
-            return mapper.convert(repository.save(cartToBeEmpty), new CartDto());
-        } else throw new EnocaEcommerceProjectException("there is No cart with id: " + id);
+        return null;
     }
 
     @Override
@@ -82,36 +90,7 @@ public class CartServiceImpl implements CartService {
     @Transactional
     public CartDto addProductToCart (Long customerId, Long productId,int quantity){
 
-        Cart cart = repository.findByCustomerIdAndIsDeleted(customerId,false);
-        CartDto cartDto = mapper.convert(cart, new CartDto());
-
-        if (cartDto == null) {
-            throw new EnocaEcommerceProjectException("Cart not found for customer id: " + customerId);
-        }
-
-        ProductDto productDto = productService.getProductById(productId);
-
-        if (productDto.getInStockQuantity() < quantity) {
-            throw new EnocaEcommerceProjectException("Not enough stock for product: " + productDto.getProductName());
-        }
-
-        OrderItemDto orderItem = cartDto.getCartItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElseGet(() -> {
-                    OrderItemDto newItem = new OrderItemDto();
-                    newItem.setProduct(productDto);
-                    newItem.setCart(cartDto);
-//                    cartDto.getCartItems().add(newItem);
-                    return new OrderItem();
-                });
-
-        orderItem.setQuantity(orderItem.getQuantity() + quantity);
-        orderItem.setPrice(orderItem.getProduct().getPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
-        BigDecimal updatedTotalPrice = calculateCartTotalPrice(cartDto);
-        cartDto.setTotalPrice(updatedTotalPrice);
-        repository.save(mapper.convert(cartDto, new Cart()));
-        return cartDto;
+        return null;
     }
 
     private BigDecimal calculateCartTotalPrice(CartDto cartDto) {
@@ -125,30 +104,7 @@ public class CartServiceImpl implements CartService {
     @Override
     @Transactional
     public CartDto removeProductFromCart(Long customerId, Long productId, int quantity) {
-
-        Cart cart = repository.findByCustomerIdAndIsDeleted(customerId, false);
-        CartDto cartDto = mapper.convert(cart, new CartDto());
-
-        OrderItemDto cartItem = cartDto.getOrderItems().stream()
-                .filter(item -> item.getProduct().getId().equals(productId))
-                .findFirst()
-                .orElseThrow(() -> new EnocaEcommerceProjectException("Product not found in cart for product id: " + productId));
-
-        if (cartItem.getQuantity() < quantity) {
-            throw new EnocaEcommerceProjectException("Cannot remove more items than are in the cart for product id: " + productId);
-        }
-
-        cartItem.setQuantity(cartItem.getQuantity() - quantity);
-        if (cartItem.getQuantity() == 0) {
-            cartDto.getOrderItems().remove(cartItem);
-        } else {
-            cartItem.setPrice(cartItem.getProduct().getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
-        }
-
-        BigDecimal updatedTotalPrice = calculateCartTotalPrice(cartDto);
-        cartDto.setTotalPrice(updatedTotalPrice);
-        repository.save(mapper.convert(cartDto, new Cart()));
-        return cartDto;
+        return null;
     }
 
 
