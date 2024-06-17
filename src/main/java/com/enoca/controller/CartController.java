@@ -65,14 +65,14 @@ public class CartController {
         );
     }
 
-    @GetMapping("/empty/{id}")
-    public ResponseEntity<ResponseWrapper> emptyCart(@PathVariable long id){
-        CartDto updatedCart = cartService.emptyCart(id);
+    @GetMapping("/empty")
+    public ResponseEntity<ResponseWrapper> emptyCart(@RequestParam(required = false) long customerId){
+        CartDto updatedCart = cartService.emptyCart(customerId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 ResponseWrapper.builder()
                         .success(true)
                         .code(HttpStatus.ACCEPTED.value())
-                        .message("cart is successfully cleared")
+                        .message("cart is successfully Emptied")
                         .data(updatedCart)
                         .build()
         );

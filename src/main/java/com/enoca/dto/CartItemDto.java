@@ -14,4 +14,7 @@ public class CartItemDto {
     private ProductDto product;
 
     private int quantity;
+
+    @JsonIgnore
+    private Boolean isDeleted;
 }

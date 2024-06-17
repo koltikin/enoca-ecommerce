@@ -4,20 +4,19 @@ import com.enoca.dto.CartDto;
 import com.enoca.dto.CartItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
-import com.enoca.entity.CartItem;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
 import com.enoca.service.CartItemService;
 import com.enoca.service.CartService;
-import com.enoca.service.CustomerService;
 import com.enoca.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.Lazy;
+
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,8 +114,17 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    public CartDto emptyCart(long id) {
-        return null;
+    public CartDto emptyCart(long customerId) {
+        CartDto cart = findByCustomerId(customerId);
+        // set cart total price 0 and delete all cartItem
+        cart.setTotalPrice(BigDecimal.ZERO);
+        cart.getCartItems()
+                .forEach(item->{
+                    item.setIsDeleted(true);
+                    cartItemService.saveCartItem(item);
+                });
+        cart.getCartItems().clear();
+        return saveCart(cart);
     }
 
     @Override
