@@ -16,8 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -147,20 +147,36 @@ public class CartServiceImpl implements CartService {
         return mapper.convert(savedCart, new CartDto());
     }
 
-    private void calculateCartTotalPriceAndSave(CartDto cartDto, CartItemDto cartItem, int quantity) {
+    private CartDto calculateCartTotalPriceAndSave(CartDto cartDto, CartItemDto cartItem, int quantity) {
         int addedQuantity = quantity - cartItem.getQuantity();
         BigDecimal productPrice = cartItem.getProduct().getPrice();
         BigDecimal oldTotalPrice = cartDto.getTotalPrice();
         BigDecimal newTotalPrice = oldTotalPrice.add(productPrice.multiply(BigDecimal.valueOf(addedQuantity)));
         cartDto.setTotalPrice(newTotalPrice);
-        saveCart(cartDto);
+        return saveCart(cartDto);
     }
 
 
     @Override
     @Transactional
-    public CartDto removeProductFromCart(Long customerId, Long productId, int quantity) {
-        return null;
+    public CartDto removeProductFromCart(Long customerId, Long productId) {
+        CartDto cart = findByCustomerId(customerId);
+        ProductDto product = productService.getProductById(productId);
+        Optional<CartItemDto> foundCartItem = cart.getCartItems().stream().
+                filter(cartItem -> Objects.equals(cartItem.getProduct().getId(), productId))
+                .findFirst();
+        if (foundCartItem.isEmpty()){
+            throw new EnocaEcommerceProjectException("the Cart doesn't have the product you want to remove");
+        }
+        CartItemDto cartItem = foundCartItem.get();
+        cart.getCartItems().remove(cartItem);
+        cart.setTotalPrice(cart.getTotalPrice().subtract(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity()))));
+        CartDto afterRemoveCart = saveCart(cart);
+
+        foundCartItem.get().setIsDeleted(true);
+        cartItemService.save(foundCartItem.get());
+
+        return afterRemoveCart;
     }
 
 

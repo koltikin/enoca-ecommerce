@@ -78,8 +78,15 @@ public class CartController {
         );
     }
 
-    @PutMapping("/removeProduct/{customerId}")
-    public CartDto removeProductFromCart(@PathVariable Long customerId, @RequestParam Long productId, @RequestParam int quantity) {
-        return cartService.removeProductFromCart(customerId, productId, quantity);
+    @PutMapping("/removeProduct")
+    public ResponseEntity<ResponseWrapper> removeProductFromCart(@RequestParam Long customerId, @RequestParam Long productId) {
+        CartDto cartDto = cartService.removeProductFromCart(customerId, productId);
+        return ResponseEntity.ok(ResponseWrapper.builder()
+                        .success(true)
+                        .code(HttpStatus.OK.value())
+                        .message("The product successfully removed from cart")
+                        .data(cartDto)
+                .build());
+
     }
 }
