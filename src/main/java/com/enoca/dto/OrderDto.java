@@ -2,6 +2,7 @@ package com.enoca.dto;
 
 import com.enoca.entity.Customer;
 import com.enoca.entity.OrderItem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

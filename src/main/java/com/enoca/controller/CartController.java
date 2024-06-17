@@ -39,8 +39,8 @@ public class CartController {
         );
     }
 
-    @PostMapping("/addproduct/{customerId}")
-    public ResponseEntity<ResponseWrapper> addProductToCart(@PathVariable long customerId,
+    @PostMapping("/addproduct")
+    public ResponseEntity<ResponseWrapper> addProductToCart(@RequestParam(required = false) long customerId,
                                                             @RequestParam long productId){
         CartDto cart = cartService.addProductToCart(customerId, productId);
         return ResponseEntity.ok(ResponseWrapper.builder()
@@ -51,10 +51,10 @@ public class CartController {
                 .build());
     }
 
-    @PutMapping("/update/{cartId}")
-    public ResponseEntity<ResponseWrapper> updateCart(@PathVariable long cartId,
+    @PutMapping("/update")
+    public ResponseEntity<ResponseWrapper> updateCart(@RequestParam(required = false) long customerId,
                                                       @RequestParam long productId, @RequestParam int quantity){
-        CartDto updatedCart = cartService.updateCart(cartId, productId,quantity);
+        CartDto updatedCart = cartService.updateCart(customerId, productId,quantity);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(
                 ResponseWrapper.builder()
                         .success(true)

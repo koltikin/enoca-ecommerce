@@ -16,7 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CartDto {
+//    @JsonIgnore
     private Long id;
+    @JsonIgnore
     private CustomerDto customer;
     private List<CartItemDto> cartItems;
     private BigDecimal totalPrice;

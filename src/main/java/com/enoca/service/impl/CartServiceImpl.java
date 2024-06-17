@@ -55,14 +55,30 @@ public class CartServiceImpl implements CartService {
     public CartDto addProductToCart (long customerId, long productId){
         CartDto cart = findByCustomerId(customerId);
         ProductDto product = productService.getProductById(productId);
-        // create new cartItem with product
-        CartItemDto cartItem = new CartItemDto();
-        cartItem.setProduct(product);
-        cartItem.setQuantity(1);
-        // save new card item
-        CartItemDto savedCardItem = cartItemService.saveCartItem(cartItem);
-        // add cart item to cart
-        cart.getCartItems().add(savedCardItem);
+
+        if (product.getInStockQuantity()<1){
+            throw  new EnocaEcommerceProjectException("Product don't have enough stock");
+        }
+
+        // check if product in cart or not
+        Optional<CartItemDto> foundCartItem = cart.getCartItems().stream()
+                .filter(item->item.getProduct().getId() == productId).findAny();
+        if (foundCartItem.isPresent()){
+            if (foundCartItem.get().getQuantity()+1 > product.getInStockQuantity()) {
+                throw  new EnocaEcommerceProjectException("There is no more stock from this product");
+            }
+            foundCartItem.get().setQuantity(foundCartItem.get().getQuantity()+1);
+            cartItemService.save(foundCartItem.get());
+        }else {
+            // create new cartItem with product
+            CartItemDto cartItem = new CartItemDto();
+            cartItem.setProduct(product);
+            cartItem.setQuantity(1);
+            // save new card item
+            CartItemDto savedCardItem = cartItemService.saveCartItem(cartItem);
+            // add cart item to cart
+            cart.getCartItems().add(savedCardItem);
+        }
 
         // increase cart Total price
         cart.setTotalPrice(cart.getTotalPrice().add(product.getPrice()));
