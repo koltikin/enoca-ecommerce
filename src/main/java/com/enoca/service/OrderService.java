@@ -13,4 +13,6 @@ public interface OrderService {
     OrderDto getOrderForCode(String orderCode);
 
     List<OrderDto> getAllOrdersForCustomer(Long customerId);
+
+    List<OrderDto> getAllOrders();
 }

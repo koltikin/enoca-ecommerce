@@ -16,8 +16,8 @@ import java.util.List;
 public class OrderController {
     private final OrderService oderService;
 
-    @PostMapping
-    public ResponseEntity<ResponseWrapper> placeOrder(@RequestParam Long customerId) {
+    @PostMapping("/{customerId}")
+    public ResponseEntity<ResponseWrapper> placeOrder(@PathVariable(required = false) Long customerId) {
         OrderDto order =  oderService.placeOrder(customerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ResponseWrapper.builder()
@@ -29,8 +29,8 @@ public class OrderController {
         );
     }
 
-    @GetMapping("/order/{orderCode}")
-    public ResponseEntity<ResponseWrapper> getOrderForCode(@PathVariable String orderCode) {
+    @GetMapping
+    public ResponseEntity<ResponseWrapper> getOrderForCode(@RequestParam String orderCode) {
         OrderDto order =  oderService.getOrderForCode(orderCode);
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseWrapper.builder()
@@ -42,9 +42,22 @@ public class OrderController {
         );
     }
 
-    @GetMapping("/order/{customerId}")
-    public ResponseEntity<ResponseWrapper> getAllOrdersForCustomer(@PathVariable Long customerId) {
+    @GetMapping("/{customerId}")
+    public ResponseEntity<ResponseWrapper> getAllOrdersForCustomer(@PathVariable(required = false) Long customerId) {
         List<OrderDto> orders =  oderService.getAllOrdersForCustomer(customerId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ResponseWrapper.builder()
+                        .success(true)
+                        .code(HttpStatus.OK.value())
+                        .message("Orders are successfully retrieved")
+                        .data(orders)
+                        .build()
+        );
+    }
+
+    @GetMapping("/getall")
+    public ResponseEntity<ResponseWrapper> getAllOrders() {
+        List<OrderDto> orders =  oderService.getAllOrders();
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseWrapper.builder()
                         .success(true)

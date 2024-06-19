@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDto getOrderForCode(String orderCode) {
         Order order = repository.findOrderByOrderCodeAndIsDeleted(orderCode,false)
-                .orElseThrow(()->new NoSuchElementException("No order found with code: " + orderCode));
+                .orElseThrow(()->new EnocaEcommerceProjectException("No order found with code: " + orderCode));
         return mapper.convert(order, new OrderDto());
     }
 
@@ -84,6 +84,14 @@ public class OrderServiceImpl implements OrderService {
         List<Order> orders = repository.findOrderByCustomerIdAndIsDeleted(customerId, false);
         return orders.stream()
                 .map(order -> mapper.convert(order, new OrderDto()))
+                .toList();
+    }
+
+    @Override
+    public List<OrderDto> getAllOrders() {
+        List<Order> orders = repository.findAllByIsDeleted(false);
+        return orders.stream()
+                .map(order->mapper.convert(order, new OrderDto()))
                 .toList();
     }
 }

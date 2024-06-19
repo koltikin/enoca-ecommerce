@@ -12,4 +12,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     Optional<Order> findOrderByOrderCodeAndIsDeleted(String orderCode,boolean isDeleted);
 
     List<Order> findOrderByCustomerIdAndIsDeleted(Long customerId, boolean isDeleted);
+
+    List<Order> findAllByIsDeleted(boolean isDeleted);
 }
