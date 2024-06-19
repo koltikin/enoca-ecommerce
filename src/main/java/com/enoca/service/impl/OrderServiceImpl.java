@@ -1,16 +1,17 @@
 package com.enoca.service.impl;
 
-import com.enoca.dto.OrderDto;
+import com.enoca.dto.*;
 import com.enoca.entity.Order;
+import com.enoca.entity.Product;
+import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.OrderRepository;
-import com.enoca.service.CartService;
-import com.enoca.service.OrderCodeService;
-import com.enoca.service.OrderService;
-import com.enoca.service.ProductService;
+import com.enoca.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -18,14 +19,51 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
     private final CartService cartService;
-    private final ProductService productService;
     private final OrderRepository repository;
     private final OrderCodeService orderCodeService;
+    private final OrderItemService orderItemService;
+    private final ProductService productService;
     private final MapperUtil mapper;
 
     @Override
     public OrderDto placeOrder(Long customerId) {
-       return  null;
+        CartDto cart = cartService.findByCustomerId(customerId);
+
+        // check if customer has product in cart
+        if (cart.getCartItems().isEmpty()){
+            throw new EnocaEcommerceProjectException("There is no product in customer cart");
+        }
+        // create new order
+        OrderDto order = new OrderDto();
+        // create orderItems list and add order item
+        List<OrderItemDto> orderItems = cart.getCartItems().stream()
+                .map(item->{
+                    OrderItemDto orderItem = new OrderItemDto();
+                    ProductDto product = item.getProduct();
+
+                    orderItem.setProduct(product);
+                    orderItem.setPrice(product.getPrice());
+                    orderItem.setQuantity(item.getQuantity());
+                    // decrease product quantity
+                    if (product.getInStockQuantity() < item.getQuantity()){
+                        throw new EnocaEcommerceProjectException("The product: '" + product.getProductName() + "'"
+                                + " doesn't have enough stock");
+                    }
+                    product.setInStockQuantity(product.getInStockQuantity() - item.getQuantity());
+                    productService.save(product);
+                    orderItemService.saveOrderItem(orderItem);
+                    return orderItem;
+                }).toList();
+        order.setOrderItems(orderItems);
+        order.setTotalPrice(cart.getTotalPrice());
+        order.setOrderCode(orderCodeService.generateOrderCode());
+        order.setCustomer(cart.getCustomer());
+        order.setOrderDateTime(LocalDateTime.now());
+        // clear cartItems
+        cartService.emptyCart(customerId);
+        Order savedOrder = repository.save(mapper.convert(order, new Order()));
+        return mapper.convert(savedOrder, new OrderDto());
+
     }
 
     @Override

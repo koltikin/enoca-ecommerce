@@ -1,9 +1,7 @@
 package com.enoca.dto;
 
-import com.enoca.entity.Order;
 import com.enoca.entity.Product;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.JoinColumn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +17,7 @@ import java.math.BigDecimal;
 public class OrderItemDto {
 
     private Long id;
-    private Product product;
-
-    private Order order;
-
+    private ProductDto product;
     private BigDecimal price;
     private int quantity;
 

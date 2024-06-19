@@ -4,6 +4,7 @@ import com.enoca.dto.CartDto;
 import com.enoca.dto.CartItemDto;
 import com.enoca.dto.ProductDto;
 import com.enoca.entity.Cart;
+import com.enoca.entity.CartItem;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CartRepository;
@@ -43,10 +44,8 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public CartDto getCart(long id) {
-        Cart cart = repository.findByIdAndIsDeleted(id, false)
-                .orElseThrow(() -> new EnocaEcommerceProjectException("No cart found with id: " + id));
-        return mapper.convert(cart, new CartDto());
+    public CartDto getCart(long customerId) {
+        return findByCustomerId(customerId);
     }
 
     @Override
@@ -138,7 +137,14 @@ public class CartServiceImpl implements CartService {
     public CartDto findByCustomerId(Long customerId) {
         Cart cart = repository.findByCustomerIdAndIsDeleted(customerId,false)
                 .orElseThrow(()->new EnocaEcommerceProjectException("No specific cart found"));
+        cart.setTotalPrice(findCartTotalPrice(cart.getCartItems()));
         return mapper.convert(cart, new CartDto());
+    }
+
+    private BigDecimal findCartTotalPrice(List<CartItem> cartItems) {
+        return cartItems.stream().map(item->
+                item.getProduct().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
     }
 
     @Override

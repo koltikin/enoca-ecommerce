@@ -26,9 +26,9 @@ public class CartController {
         );
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ResponseWrapper> getCart(@PathVariable long id){
-        CartDto cart = cartService.getCart(id);
+    @GetMapping("/{customerId}")
+    public ResponseEntity<ResponseWrapper> getCart(@PathVariable(required = false) long customerId){
+        CartDto cart = cartService.getCart(customerId);
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseWrapper.builder()
                         .success(true)

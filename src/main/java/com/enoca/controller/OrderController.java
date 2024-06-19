@@ -16,8 +16,8 @@ import java.util.List;
 public class OrderController {
     private final OrderService oderService;
 
-    @PostMapping("/order/{customerId}")
-    public ResponseEntity<ResponseWrapper> placeOrder(@PathVariable Long customerId) {
+    @PostMapping
+    public ResponseEntity<ResponseWrapper> placeOrder(@RequestParam Long customerId) {
         OrderDto order =  oderService.placeOrder(customerId);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 ResponseWrapper.builder()
