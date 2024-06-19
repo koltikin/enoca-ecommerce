@@ -7,17 +7,23 @@ spring:
     username: postgres
     password: admin
 
-# secure with authentication
-#  security:
-#    oauth2:
-#      resourceserver:
-#        jwt:
-#          issuer-uri: https://kc.yukseluyghur.com/realms/cydeo-dev
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    defer-datasource-initialization: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
 
 
-#springdoc:
-#  swagger-ui:
-#    oauth:
-#      client-id: ticketing-app
-#      client-secret: HbjtXoW0IMAgq91lkD5cRmRIDNz10CHl
 
+
+springdoc:
+  swagger-ui:
+    path: /show-swagger
