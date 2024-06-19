@@ -2,11 +2,13 @@ spring:
   application:
     name: enoca-ecommerce
 
+# database configuration
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/enoca-ecommerce
     username: postgres
     password: admin
 
+# Jpa configuration
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     defer-datasource-initialization: true
@@ -17,13 +19,25 @@ spring:
       hibernate:
         format_sql: true
 
+# sql configuration
   sql:
     init:
       mode: always
 
+# secure configuration
+  security:
+    oauth2:
+      resourceserver:
+        # with jwt token
+        jwt:
+          issuer-uri: https://kc.yukseluyghur.com/realms/enoca-dev
 
 
-
+# swagger-ui configuration
 springdoc:
   swagger-ui:
     path: /show-swagger
+    oauth:
+      client-id: enoca-ecommerce
+      client-secret: M7EJ85BxG91vwIUxVDgXOR2JjYHuTqxY
+

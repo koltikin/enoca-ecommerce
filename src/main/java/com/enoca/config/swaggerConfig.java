@@ -1,5 +1,8 @@
 package com.enoca.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
@@ -9,6 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
+@SecurityScheme(
+        name = "keycloak",
+        openIdConnectUrl = "https://kc.yukseluyghur.com/realms/enoca-dev/.well-known/openid-configuration",
+        scheme = "bearer",
+        type = SecuritySchemeType.OPENIDCONNECT,
+        in = SecuritySchemeIn.HEADER
+)
 public class swaggerConfig {
 
     @Bean

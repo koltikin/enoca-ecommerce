@@ -17,4 +17,5 @@ public class Customer extends BaseEntity {
     @Column(unique = true, nullable = false)
     private String email;
     private String passWord;
+    private String role;
 }

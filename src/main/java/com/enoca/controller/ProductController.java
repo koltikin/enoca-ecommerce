@@ -4,6 +4,7 @@ import com.enoca.dto.ProductDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,12 +14,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/product")
+@SecurityRequirement(name="keycloak")
 public class ProductController {
     private final ProductService productService;
 
     @Operation(summary = "Get all the products)",
             description = "This endpoint allows you to get all the products")
-    @GetMapping(value = "/list", produces = "application/json")
+    @GetMapping(value = "/list")
     public ResponseEntity<ResponseWrapper> getProductList(){
         return ResponseEntity.ok(
                 ResponseWrapper.builder()
