@@ -21,8 +21,12 @@ import java.util.List;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class CustomerDto {
+    @JsonIgnore
     private Long id;
+
+    @NotBlank(message = "FirstName should not be blank")
     private String firstName;
+
     private String lastName;
 
     @Email(message = "Email should be valid")

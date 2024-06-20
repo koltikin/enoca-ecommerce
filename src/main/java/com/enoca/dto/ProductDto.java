@@ -18,6 +18,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductDto {
+    @JsonIgnore
     private Long id;
 
     @NotBlank(message = "Product name should not be blank")
@@ -27,6 +28,7 @@ public class ProductDto {
     @Min(value = 0, message = "Price must be greater than or equal to 0")
     private BigDecimal price;
 
+    @NotNull(message = "inStockQuantity should not be null")
     @Min(value = 0, message = "In stock quantity should not be less then 0")
     private Integer inStockQuantity;
 }
