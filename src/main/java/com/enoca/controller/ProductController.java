@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,6 +23,8 @@ public class ProductController {
 
     @Operation(summary = "Get all the products, any customer can get products list)",
             description = "This endpoint allows you to get all the products")
+
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/list")
     public ResponseEntity<ResponseWrapper> getProductList(){
         return ResponseEntity.ok(
@@ -36,6 +39,8 @@ public class ProductController {
 
     @Operation(summary = "Get specific products)",
             description = "This endpoint allows you to get specific product")
+
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/{productId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> getProduct(@PathVariable Long productId){
         return ResponseEntity.ok(
@@ -52,6 +57,7 @@ public class ProductController {
             description = "This endpoint allows you to create a new product." +
                     "productName, price and inStockQuantity are required fields")
 
+    @PreAuthorize("hasAnyRole('root')")
     @PostMapping(value = "/create", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ResponseWrapper> createProduct(@Valid @RequestBody ProductDto productDto){
         var createdProduct = productService.create(productDto);
@@ -72,6 +78,7 @@ public class ProductController {
                     "productName, price and inStockQuantity are required fields " +
                     "and you should give valid product id as pathVariable")
 
+    @PreAuthorize("hasAnyRole('root')")
     @PutMapping(value = "/update/{productId}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<ResponseWrapper> updateProduct(@Valid @RequestBody ProductDto productDto, @PathVariable Long productId){
         var updatedProduct = productService.update(productDto,productId);
@@ -91,6 +98,7 @@ public class ProductController {
             description = "This endpoint allows you to delete product." +
                     "you should give valid product id as pathVariable")
 
+    @PreAuthorize("hasAnyRole('root')")
     @DeleteMapping(value = "/delete/{productId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> deleteProduct(@PathVariable Long productId){
         var deletedProduct = productService.delete(productId);

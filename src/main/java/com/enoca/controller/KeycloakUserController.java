@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +24,10 @@ import java.util.List;
 public class KeycloakUserController {
     private final KeycloakService keycloakService;
 
-    @Operation(summary = "Get all the customers from keycloak enoca-dev realm, only root user can do this)",
+    @Operation(summary = "Get all the customers from keycloak enoca-dev realm, only realm-admin user can do this)",
             description = "This endpoint allows you to get all the customers in the enoca-dev realm from keycloak")
+
+    @PreAuthorize("hasAnyRole('realm-admin')")
     @GetMapping(value = "/users")
     public ResponseEntity<ResponseWrapper> getCustomerList(){
         List<KeycloakUser> customerList = keycloakService.getUserFromKeycloak();
@@ -38,10 +41,11 @@ public class KeycloakUserController {
         );
     }
 
-    @Operation(summary = "Create customer to keycloak enoca-dev realm, only root user can do this)",
+    @Operation(summary = "Create customer to keycloak enoca-dev realm, only realm-admin user can do this)",
             description = "This endpoint allows you to create customer to keycloak enoca-dev realm. " +
                     "but the user will not be saved in application database")
 
+    @PreAuthorize("hasAnyRole('realm-admin')")
     @PostMapping(value = "/user/create")
     public ResponseEntity<ResponseWrapper> createKeycloakCustomer(@Valid @RequestBody KeycloakUser keycloakUser){
         KeycloakUser savedKeycloakUser = keycloakService.createKeycloakUser(keycloakUser);

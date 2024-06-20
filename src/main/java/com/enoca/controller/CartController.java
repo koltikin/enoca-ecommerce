@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,6 +30,7 @@ public class CartController {
                     content = @Content(mediaType = "application/json"))
     })
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/list", produces = "application/json")
     public ResponseEntity<ResponseWrapper> getAllCarts(){
         return ResponseEntity.ok().body(
@@ -43,6 +45,8 @@ public class CartController {
 
     @Operation(summary = "Get cart by customer id)",
             description = "This endpoint allows you to get customer car by customer id, you can pass customer id as pathVariable")
+
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> getCart(@PathVariable(required = false) long customerId){
         CartDto cart = cartService.getCart(customerId);
@@ -61,6 +65,7 @@ public class CartController {
                     "you can pass customer id as pathVariable(if didn't pass it take current login customer) " +
                     "and you must give valid product id as RequestParam")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @PostMapping(value = "/addproduct/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> addProductToCart(@PathVariable(required = false) long customerId,
                                                             @RequestParam long productId){
@@ -78,6 +83,7 @@ public class CartController {
                     "you can pass customer id as pathVariable(if didn't pass it take current login customer) " +
                     "and you must give valid product id and quantity as RequestParam")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @PutMapping(value = "/update/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> updateCart(@PathVariable(required = false)  long customerId,
                                                       @RequestParam long productId, @RequestParam int quantity){
@@ -96,6 +102,7 @@ public class CartController {
             description = "This endpoint allows you to empty all the products in the customer cart, " +
                     "you can pass customer id as pathVariable(if didn't pass it take current login customer)")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/empty/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> emptyCart(@PathVariable(required = false) long customerId){
         CartDto updatedCart = cartService.emptyCart(customerId);
@@ -113,6 +120,7 @@ public class CartController {
             description = "This endpoint allows you to remove specific product from the customer cart, " +
                     "you can pass customer id as pathVariable(if didn't pass it take current login customer)")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @PutMapping(value = "/removeProduct/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> removeProductFromCart(@PathVariable Long customerId, @RequestParam Long productId) {
         CartDto cartDto = cartService.removeProductFromCart(customerId, productId);

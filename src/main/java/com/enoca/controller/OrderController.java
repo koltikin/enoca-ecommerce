@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class OrderController {
             description = "This endpoint allows you to make order" +
                     "you can pass customer id as pathVariable(if didn't pass the current login customer will be selected)")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @PostMapping(value = "/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> placeOrder(@PathVariable(required = false) Long customerId) {
         OrderDto order =  oderService.placeOrder(customerId);
@@ -42,6 +44,7 @@ public class OrderController {
             description = "This endpoint allows you to get order info by orderCode" +
                     "you should pass valid order orderCode as RequestParam")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(produces = "application/json")
     public ResponseEntity<ResponseWrapper> getOrderForCode(@RequestParam String orderCode) {
         OrderDto order =  oderService.getOrderForCode(orderCode);
@@ -59,6 +62,7 @@ public class OrderController {
             description = "This endpoint allows you to get all the orders of the specific customer" +
                     "you can pass customer id as pathVariable(if didn't pass the current login customer will be selected)")
 
+    @PreAuthorize("hasAnyRole('user','root')")
     @GetMapping(value = "/{customerId}", produces = "application/json")
     public ResponseEntity<ResponseWrapper> getAllOrdersForCustomer(@PathVariable(required = false) Long customerId) {
         List<OrderDto> orders =  oderService.getAllOrdersForCustomer(customerId);
@@ -75,6 +79,7 @@ public class OrderController {
     @Operation(summary = "get all orders only root user can do this)",
             description = "This endpoint allows root user get all the orders")
 
+    @PreAuthorize("hasAnyRole('root')")
     @GetMapping(value = "/getall", produces = "application/json")
     public ResponseEntity<ResponseWrapper> getAllOrders() {
         List<OrderDto> orders =  oderService.getAllOrders();
