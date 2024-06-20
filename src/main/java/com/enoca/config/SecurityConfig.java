@@ -49,7 +49,7 @@ public class SecurityConfig {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         JwtGrantedAuthoritiesConverter authConverter = new JwtGrantedAuthoritiesConverter();
         authConverter.setAuthorityPrefix(""); // default = "SCOPE_"
-        authConverter.setAuthoritiesClaimName("enoca_client_roles");  // default "scope" or "scp"
+        authConverter.setAuthoritiesClaimName("enoca_realm_roles");  // default "scope" or "scp"
         converter.setJwtGrantedAuthoritiesConverter(authConverter);
         return converter;
     }

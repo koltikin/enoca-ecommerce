@@ -19,6 +19,7 @@ import java.util.List;
         type = SecuritySchemeType.OPENIDCONNECT,
         in = SecuritySchemeIn.HEADER
 )
+
 public class swaggerConfig {
 
     @Bean

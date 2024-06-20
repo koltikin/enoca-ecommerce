@@ -41,3 +41,13 @@ springdoc:
       client-id: enoca-ecommerce
       client-secret: M7EJ85BxG91vwIUxVDgXOR2JjYHuTqxY
 
+# keycloak properties
+keycloak:
+  realm_name: enoca-dev
+  server-url: https://kc.yukseluyghur.com
+  client-id: admin-cli
+  grant-type: password
+  username: admin
+  password: Enoca123
+  application_clientId: enoca-ecommerce
+

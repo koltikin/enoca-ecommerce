@@ -26,7 +26,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    @Operation(summary = "Get all customers, only for root user can do this",
+    @Operation(summary = "Get all customers, only root user can do this",
             description = "This endpoint allows root user to get all customers list")
 
     @PreAuthorize("hasAnyRole('root')")
@@ -42,7 +42,7 @@ public class CustomerController {
         );
     }
 
-    @Operation(summary = "Create customer account)",
+    @Operation(summary = "Create customer account any user can create account without authentication)",
             description = "This endpoint allows you to create a new customer account. email used for user name" +
                     "firstName, email and passWord are required fields")
 

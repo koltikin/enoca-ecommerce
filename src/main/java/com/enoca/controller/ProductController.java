@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProductController {
     private final ProductService productService;
 
-    @Operation(summary = "Get all the products)",
+    @Operation(summary = "Get all the products, any customer can get products list)",
             description = "This endpoint allows you to get all the products")
     @GetMapping(value = "/list")
     public ResponseEntity<ResponseWrapper> getProductList(){

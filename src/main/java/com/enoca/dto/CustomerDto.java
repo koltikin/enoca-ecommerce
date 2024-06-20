@@ -37,6 +37,7 @@ public class CustomerDto {
     ,message = "Password must be at least 6 characters long and contain at least one digit and one uppercase letter")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passWord;
-    @JsonIgnore
+
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String role = "user";
 }
