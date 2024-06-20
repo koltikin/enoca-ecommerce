@@ -1,8 +1,9 @@
 package com.enoca.service.impl;
 
 import com.enoca.config.KeycloakProperties;
-import com.enoca.dto.CustomerDto;
+import com.enoca.dto.KeycloakUser;
 import com.enoca.exception.EnocaEcommerceProjectException;
+import com.enoca.service.CustomerService;
 import com.enoca.service.KeycloakService;
 import static org.keycloak.admin.client.CreatedResponseUtil.getCreatedId;
 import jakarta.ws.rs.core.Response;
@@ -29,15 +30,19 @@ public class KeycloakServiceImpl implements KeycloakService {
 
 
     @Override
-    public List<CustomerDto> getUserFromKeycloak() {
+    public List<KeycloakUser> getUserFromKeycloak() {
         Keycloak keycloak = keycloakProperties.getKeycloakInstance();
         List<UserRepresentation> userRepresentations = keycloak.realm(realm).users().list();
         return mapToCustomers(userRepresentations);
     }
 
     @Override
-    public CustomerDto createCustomer(CustomerDto customer) {
-        UserRepresentation userRep = mapToUserRep(customer);
+    public KeycloakUser createKeycloakUser(KeycloakUser keycloakUser) {
+
+        if (!keycloakUser.getRole().equals("user") && !keycloakUser.getRole().equals("root") ){
+            throw new EnocaEcommerceProjectException("Role should be 'user', or root");
+        }
+        UserRepresentation userRep = mapToUserRep(keycloakUser);
         Keycloak keycloak = keycloakProperties.getKeycloakInstance();
         UsersResource usersResource = keycloak.realm(realm).users();
         // Create user
@@ -50,13 +55,12 @@ public class KeycloakServiceImpl implements KeycloakService {
         String userId = getCreatedId(response);
 
         // Assign role to the user
-        assignRealmRoleToUser(userId, customer.getRole(), keycloak);
+        assignRealmRoleToUser(userId, keycloakUser.getRole(), keycloak);
 
         // Assign client-level role to the user
-        assignClientRoleToUser(userId, keycloakProperties.getApplication_clientId(), customer.getRole(), keycloak);
+        assignClientRoleToUser(userId, keycloakProperties.getApplication_clientId(), keycloakUser.getRole(), keycloak);
 
-
-        return customer;
+        return keycloakUser;
     }
 
     private void assignRealmRoleToUser(String userId, String roleName, Keycloak keycloak) {
@@ -72,28 +76,28 @@ public class KeycloakServiceImpl implements KeycloakService {
         usersResource.get(userId).roles().clientLevel(clientUuid).add(List.of(clientRole));
     }
 
-    private UserRepresentation mapToUserRep(CustomerDto customer) {
+    private UserRepresentation mapToUserRep(KeycloakUser keycloakUser) {
         UserRepresentation userRep = new UserRepresentation();
 
-        userRep.setUsername(customer.getFirstName());
-        userRep.setFirstName(customer.getFirstName());
-        userRep.setLastName(customer.getLastName());
-        userRep.setEmail(customer.getEmail());
+        userRep.setUsername(keycloakUser.getEmail());
+        userRep.setFirstName(keycloakUser.getFirstName());
+        userRep.setLastName(keycloakUser.getLastName());
+        userRep.setEmail(keycloakUser.getEmail());
         userRep.setEnabled(true);
         userRep.setEmailVerified(true);
 
         List<CredentialRepresentation> credentials = new ArrayList<>();
         CredentialRepresentation credentialRep = new CredentialRepresentation();
         credentialRep.setTemporary(false);
-        credentialRep.setValue(customer.getPassWord());
+        credentialRep.setValue(keycloakUser.getPassWord());
         credentials.add(credentialRep);
 
         userRep.setCredentials(credentials);
         return userRep;
     }
 
-    private List<CustomerDto> mapToCustomers(List<UserRepresentation> userRepresentations) {
-        List<CustomerDto> customers = new ArrayList<>();
+    private List<KeycloakUser> mapToCustomers(List<UserRepresentation> userRepresentations) {
+        List<KeycloakUser> customers = new ArrayList<>();
         if (CollectionUtil.isNotEmpty(userRepresentations)){
             userRepresentations.forEach(userRep->{
                 customers.add(mapToCustomer(userRep));
@@ -102,8 +106,8 @@ public class KeycloakServiceImpl implements KeycloakService {
         return customers;
     }
 
-    private CustomerDto mapToCustomer(UserRepresentation userRep) {
-        CustomerDto customer = new CustomerDto();
+    private KeycloakUser mapToCustomer(UserRepresentation userRep) {
+        KeycloakUser customer = new KeycloakUser();
         customer.setFirstName(userRep.getFirstName());
         customer.setLastName(userRep.getLastName());
         customer.setEmail(userRep.getEmail());

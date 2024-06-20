@@ -1,6 +1,5 @@
 package com.enoca.dto;
 
-import com.enoca.entity.Product;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,11 +1,11 @@
 package com.enoca.service;
 
-import com.enoca.dto.CustomerDto;
+import com.enoca.dto.KeycloakUser;
 
 import java.util.List;
 
 public interface KeycloakService {
-    List<CustomerDto> getUserFromKeycloak();
+    List<KeycloakUser> getUserFromKeycloak();
 
-    CustomerDto createCustomer(CustomerDto customer);
+    KeycloakUser createKeycloakUser(KeycloakUser keycloakUser);
 }

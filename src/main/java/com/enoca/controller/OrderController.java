@@ -5,6 +5,7 @@ import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/order")
 @SecurityRequirement(name="keycloak")
+@Tag(name = "Orders", description = "Operations related to orders")
 public class OrderController {
     private final OrderService oderService;
 

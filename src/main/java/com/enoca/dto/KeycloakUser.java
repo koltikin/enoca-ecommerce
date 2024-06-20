@@ -1,7 +1,5 @@
 package com.enoca.dto;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
@@ -12,16 +10,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class CustomerDto {
-    @JsonIgnore
-    private Long id;
+public class KeycloakUser {
 
     @NotBlank(message = "FirstName should not be blank")
     private String firstName;
@@ -33,10 +27,9 @@ public class CustomerDto {
 
     @NotBlank(message = "Password should not be blank")
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*\\d).{6,}$"
-    ,message = "Password must be at least 6 characters long and contain at least one digit and one uppercase letter")
+            ,message = "Password must be at least 6 characters long and contain at least one digit and one uppercase letter")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String passWord;
 
-    @JsonIgnore
-    private String role = "user";
+    private String role;
 }

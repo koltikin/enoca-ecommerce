@@ -2,7 +2,7 @@
 INSERT INTO customers (created_date_time, last_update_date_time, is_deleted, first_name, last_name, email,role,pass_word)
 VALUES
     ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Alim', 'Zahiroglu', 'Alim@root.com', 'root','Abc123'),
-    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Mike', 'Smith', 'Smith.smith@enoca.com','user','Abc123'),
+    ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'Mike', 'Smith', 'mike.smith@enoca.com','user','Abc123'),
     ('2024-06-15 10:00:00', '2024-06-15 10:00:00', false, 'John', 'Johnson', 'john.johnson@enoca.com','user','Abc123');
 
 

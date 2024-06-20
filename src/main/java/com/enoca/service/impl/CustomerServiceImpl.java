@@ -2,13 +2,16 @@ package com.enoca.service.impl;
 
 import com.enoca.dto.CartDto;
 import com.enoca.dto.CustomerDto;
+import com.enoca.dto.KeycloakUser;
 import com.enoca.entity.Customer;
 import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CustomerRepository;
 import com.enoca.service.CartService;
 import com.enoca.service.CustomerService;
+import com.enoca.service.KeycloakService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,6 +23,8 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository repository;
     private final CartService cartService;
     private final MapperUtil mapper;
+    private final KeycloakService keycloakService;
+
 
     @Override
     public CustomerDto createCustomer(CustomerDto customerDto) {
@@ -39,7 +44,22 @@ public class CustomerServiceImpl implements CustomerService {
         cartDto.setCustomer(mapper.convert(savedCustomer, new CustomerDto()));
         cartService.createCart(cartDto);
 
+        // create keycloak user
+        createKeycloakUser(customerDto);
+
         return mapper.convert(savedCustomer, new CustomerDto());
+    }
+
+
+    private void createKeycloakUser(CustomerDto customerDto) {
+        KeycloakUser keycloakUser = new KeycloakUser();
+        keycloakUser.setFirstName(customerDto.getFirstName());
+        keycloakUser.setLastName(customerDto.getLastName());
+        keycloakUser.setEmail(customerDto.getEmail());
+        keycloakUser.setRole(customerDto.getRole());
+        keycloakUser.setPassWord(customerDto.getPassWord());
+
+        keycloakService.createKeycloakUser(keycloakUser);
     }
 
     @Override
