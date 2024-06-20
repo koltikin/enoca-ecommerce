@@ -1,7 +1,6 @@
 package com.enoca.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,11 @@ import java.util.List;
 @Table(name = "carts")
 public class Cart extends BaseEntity{
 
+    @OneToOne(fetch = FetchType.LAZY)
     private Customer customer;
-    private List<OrderItem> items;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<CartItem> cartItems;
+
     private BigDecimal totalPrice;
 }
