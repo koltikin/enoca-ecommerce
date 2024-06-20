@@ -4,6 +4,7 @@ import com.enoca.dto.ProductDto;
 import com.enoca.dto.ResponseWrapper;
 import com.enoca.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/product")
+@Tag(name = "Products", description = "Operations related to products")
 public class ProductController {
     private final ProductService productService;
 
