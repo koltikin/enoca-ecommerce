@@ -8,6 +8,7 @@ import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.CustomerRepository;
 import com.enoca.service.CartService;
 import com.enoca.service.CustomerService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final MapperUtil mapper;
 
     @Override
+    @Transactional
     public CustomerDto createCustomer(CustomerDto customerDto) {
         //check customer exist or not
         boolean isCustomerExist = repository.existsByEmailAndIsDeleted(customerDto.getEmail(),false);

@@ -7,6 +7,7 @@ import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.OrderRepository;
 import com.enoca.service.*;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class OrderServiceImpl implements OrderService {
     private final MapperUtil mapper;
 
     @Override
+    @Transactional
     public OrderDto placeOrder(Long customerId) {
         CartDto cart = cartService.findByCustomerId(customerId);
 

@@ -3,6 +3,7 @@ package com.enoca.service.impl;
 import com.enoca.entity.OrderCode;
 import com.enoca.repository.OrderCodRepository;
 import com.enoca.service.OrderCodeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ public class OrderCodeServiceImpl implements OrderCodeService {
     private final OrderCodRepository orderCodRepository;
 
     @Override
+    @Transactional
     public String generateOrderCode() {
         OrderCode orderCode = orderCodRepository.findById(1L).orElseGet(()-> {
             OrderCode newOrderCode = new OrderCode();

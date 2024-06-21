@@ -38,6 +38,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public CartDto createCart(CartDto cartDto) {
         Cart savedCart = repository.save(mapper.convert(cartDto, new Cart()));
         return mapper.convert(savedCart, new CartDto());
@@ -86,6 +87,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public CartDto updateCart(long customerId, long productId, int quantity) {
         CartDto cartDto = findByCustomerId(customerId);
         ProductDto productDto = productService.getProductById(productId);
@@ -120,6 +122,7 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
+    @Transactional
     public CartDto emptyCart(long customerId) {
         CartDto cart = findByCustomerId(customerId);
         // set cart total price 0 and delete all cartItem
@@ -148,6 +151,7 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    @Transactional
     public CartDto saveCart(CartDto cartDto) {
         Cart savedCart = repository.save(mapper.convert(cartDto, new Cart()));
         return mapper.convert(savedCart, new CartDto());
