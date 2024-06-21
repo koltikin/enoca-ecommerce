@@ -10,6 +10,7 @@ import com.enoca.repository.CustomerRepository;
 import com.enoca.service.CartService;
 import com.enoca.service.CustomerService;
 import com.enoca.service.KeycloakService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
+    @Transactional
     public CustomerDto createCustomer(CustomerDto customerDto) {
         //check customer exist or not
         boolean isCustomerExist = repository.existsByEmailAndIsDeleted(customerDto.getEmail(),false);

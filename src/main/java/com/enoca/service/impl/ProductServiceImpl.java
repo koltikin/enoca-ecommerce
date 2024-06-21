@@ -6,6 +6,7 @@ import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.mapper.MapperUtil;
 import com.enoca.repository.ProductRepository;
 import com.enoca.service.ProductService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,12 +34,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto create(ProductDto productDto) {
         Product createdProduct = repository.save(mapper.convert(productDto, new Product()));
         return mapper.convert(createdProduct, new ProductDto());
     }
 
     @Override
+    @Transactional
     public ProductDto update(ProductDto productDto, Long id) {
         var foundProduct = repository.findByIdAndIsDeleted(id,false);
         if (foundProduct.isPresent()){
@@ -50,6 +53,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto delete(Long id) {
         var productTobeDelete = repository.findByIdAndIsDeleted(id,false);
         if (productTobeDelete.isPresent()){
@@ -61,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public void save(ProductDto product) {
         repository.save(mapper.convert(product,new Product()));
     }

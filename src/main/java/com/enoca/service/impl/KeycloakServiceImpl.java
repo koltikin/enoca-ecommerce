@@ -6,6 +6,8 @@ import com.enoca.exception.EnocaEcommerceProjectException;
 import com.enoca.service.CustomerService;
 import com.enoca.service.KeycloakService;
 import static org.keycloak.admin.client.CreatedResponseUtil.getCreatedId;
+
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
@@ -37,6 +39,7 @@ public class KeycloakServiceImpl implements KeycloakService {
     }
 
     @Override
+    @Transactional
     public KeycloakUser createKeycloakUser(KeycloakUser keycloakUser) {
 
         if (!keycloakUser.getRole().equals("user") && !keycloakUser.getRole().equals("root") ){
