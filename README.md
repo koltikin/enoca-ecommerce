@@ -19,9 +19,10 @@ This project is a web-based ecommerce application offering role-based management
 - PostgreSQL
 - Maven
 - Lombok
-- Swagger-UI
+- Swagger-UI, open-API
 - JSON
-- Keycloak
+- Oauth2
+- Keycloak version 22.0.5
 - Nginx
 - Docker
 
